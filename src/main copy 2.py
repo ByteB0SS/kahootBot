@@ -8,8 +8,8 @@ from utils.get_quiz import get_quiz
 
 
 kahoot_link = "https://kahoot.it/solo/07533d80-c426-4d3d-80a8-3ae49e557d12_1779474250522"
-email = "domingosconde3@gmail.com"
-name = "domin"
+email = "rubemernesto2@gmail.com"
+name = "ernest"
 
 
 parsed = urlparse(kahoot_link)
@@ -82,20 +82,30 @@ for i, ask in enumerate(asks):
             print(f"  ✓ Respondido: {correct_text}")
             break
 
+    # espera botão existir
+    next_btn = wait.until(
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, '[data-functional-selector="nano-next-button"]')
+        )
+    )
+
+    # espera ficar clicável
     next_btn = wait.until(
         EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '[data-functional-selector="nano-next-button"]')
         )
     )
-    next_btn.click()
-    sleep(0.5)
-    next_btn = wait.until(
-        EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, '[data-functional-selector="nano-next-button"]')
-        )
-    )
+
+    # garante que está visível na tela
+    driver.execute_script("arguments[0].scrollIntoView(true);", next_btn)
+
+    # clique real (mais confiável no Kahoot)
     driver.execute_script("arguments[0].click();", next_btn)
 
+    # espera UI mudar (evita clique “perdido”)
+    wait.until(
+        EC.staleness_of(next_btn)
+    )
     sleep(1)
 
 
